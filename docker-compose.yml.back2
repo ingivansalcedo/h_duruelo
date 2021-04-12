@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+  dbserver:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'm123456'
+    networks:
+      - net1
+  
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - net1
+    depends_on:
+      - dbserver
+    volumes:
+      - type: bind
+        source: ./wordpressduruelo
+        target: /var/www/html
+networks:
+  net1:

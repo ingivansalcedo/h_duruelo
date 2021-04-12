@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  dbserver:
+    image: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - red_wp
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+  wordpress:
+    depends_on:
+      - dbserver
+    image: wordpress
+    ports:
+      - 8083:80
+    restart: always
+    networks:
+      - red_wp
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_PASSWORD: 123456
+    volumes:
+      - wordpressduruelo:/var/www/html
+networks:
+   red_wp:
+volumes:
+   wordpressduruelo:

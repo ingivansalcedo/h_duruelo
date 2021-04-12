@@ -1,0 +1,48 @@
+version: '3.1'
+
+services:
+
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      WORDPRESS_DB_HOST: dbserver
+      WORDPRESS_DB_USER: userduruelo
+      WORDPRESS_DB_PASSWORD: m123456d
+      WORDPRESS_DB_NAME: wpduruelo
+    volumes:
+      - type: bind
+        source: ./wordpressduruelo
+        target: /var/www/html
+
+  dbserver:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: wpduruelo
+      MYSQL_USER: userduruelo
+      MYSQL_PASSWORD: m123456d
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - type: bind
+        source: ./db
+        target: /var/lib/mysql
+
+
+  samba:
+    image: dperson/samba
+    command: '-u "ivansalcedo;Soporte321" -s "wordpress_duruelo;./wordpressduruelo;yes;no" -s "bd_duruelo;/var/lib/mysql;yes;no"'
+    stdin_open: true
+    tty: true
+    ports:
+      - 139:139
+      - 445:445
+    volumes:
+      - type: bind 
+        source: ./wordpressduruelo
+        target: /wordpressduruelo
+      - type: bind
+        source: ./db
+        target: /var/lib/mysql
